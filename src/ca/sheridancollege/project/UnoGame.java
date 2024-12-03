@@ -21,7 +21,6 @@ public class UnoGame extends Game {
 
     public UnoGame(String name) {
         super(name);
-        this.deck = new Deck();
         this.hand = new Hand(7); // Initial hand size
     }
 

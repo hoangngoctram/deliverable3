@@ -16,17 +16,21 @@ import java.util.List;
  * @author Hoang Ngoc Tram Nguyen
  * @author Jacob Cruz
  */
-public class GroupOfCards<T extends Card> {
-
-    List<T> cards;
-    int size;
+public class GroupOfCards {
+//The group of cards, stored in an ArrayList
+    ArrayList<Card> cards = new ArrayList<>();
+    int size;//the size of the grouping
 
     public GroupOfCards(int size) {
         this.size = size;
-        cards = new ArrayList<>(size);
     }
 
-    public List<T> getCards() {
+    /**
+     * A method that will get the group of cards as an ArrayList
+     *
+     * @return the group of cards.
+     */
+    public ArrayList<Card> getCards() {
         return cards;
     }
 
@@ -34,11 +38,18 @@ public class GroupOfCards<T extends Card> {
         Collections.shuffle(cards);
     }
 
+    /**
+     * @return the size of the group of cards
+     */
     public int getSize() {
         return size;
     }
 
+    /**
+     * @param size the max size for the group of cards
+     */
     public void setSize(int size) {
         this.size = size;
     }
-}
+
+}//end class

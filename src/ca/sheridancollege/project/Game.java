@@ -6,8 +6,6 @@
 package ca.sheridancollege.project;
 
 import java.util.ArrayList;
-import java.util.List;
-
 /**
  * The class that models your game. You should create a more specific child of this class and instantiate the methods
  * given.
@@ -15,34 +13,45 @@ import java.util.List;
  * @author Jacob Cruz
  * @author Hoang Ngoc Tram Nguyen
  */
-public abstract class Game <T extends Player>{
+public abstract class Game {
 
-    private final String name;
-    private List<T> players;
+    private final String name;//the title of the game
+    private ArrayList<Player> players;// the players of the game
 
     public Game(String name) {
         this.name = name;
+        players = new ArrayList();
     }
 
+    /**
+     * @return the name
+     */
     public String getName() {
         return name;
     }
 
-    public List<T> getPlayers() {
+    /**
+     * @return the players of this game
+     */
+    public ArrayList<Player> getPlayers() {
         return players;
     }
 
-    public void setPlayers(List<T> players) {
+    /**
+     * @param players the players of this game
+     */
+    public void setPlayers(ArrayList<Player> players) {
         this.players = players;
     }
 
     /**
-     * An abstract method that subclasses will implement to define game-specific behavior.
+     * Play the game. This might be one method or many method calls depending on your game.
      */
     public abstract void play();
 
     /**
-     * Declare the winner of the game.
+     * When the game is over, use this method to declare and display a winning player.
      */
     public abstract void declareWinner();
-}
+
+}//end class

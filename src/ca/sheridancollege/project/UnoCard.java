@@ -10,28 +10,28 @@ package ca.sheridancollege.project;
  * @author Jacob Cruz
  */
 public class UnoCard extends Card {
-  private final String color;
-    private final String value;
+  private Color color;
+    private Value value;
+    
 
-    public UnoCard(String color, String value) {
+//    Used to create a card with color and value, used in Deck class
+    public UnoCard(Color color, Value value){
         this.color = color;
         this.value = value;
     }
+    
+//    Used to have a reference to getAllColors() and getAllValues, will be used to create a deck efficiently using for loops instead of manually creating cards one by one 108 times.
+    public UnoCard(){}
+   
+//    These will be used to compare two card's color/value
+    public Color getColor(){return color;}
+    public Value getValue(){return value;}
+    
 
-    UnoCard(Color color, Value value) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
+//    To display hand and top card of discard pile to player
     @Override
-    public String toString() {
-        return color + " " + value;
-    }
+    public String toString(){
+        return "Color: "+color+", Value: "+value; 
+    };
+    
 }
