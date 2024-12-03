@@ -18,6 +18,10 @@ public class UnoCard extends Card {
         this.value = value;
     }
 
+    UnoCard(Color color, Value value) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
     public String getColor() {
         return color;
     }

@@ -16,10 +16,10 @@ import java.util.List;
  * @author Hoang Ngoc Tram Nguyen
  * @author Jacob Cruz
  */
-public class GroupOfCards <T extends Card> {
+public class GroupOfCards<T extends Card> {
 
-    private List<T> cards;
-    private int size;
+    List<T> cards;
+    int size;
 
     public GroupOfCards(int size) {
         this.size = size;
