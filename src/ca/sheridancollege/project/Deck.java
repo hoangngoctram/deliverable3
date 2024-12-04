@@ -15,27 +15,28 @@ public class Deck extends UnoGroupOfCards {
     public Deck(int size){super(size);}
     
     public void buildDeck(){
-        GroupOfCards deck = new GroupOfCards(107);
-        UnoCard uc = new UnoCard();
-        
-        for(Color color:uc.getAllColors()){
-            for(Value value : uc.getAllValues()){
-                if(value.equals(WILD)==false&&value.equals(WILD4)==false&&color.equals(NONE)==false){
+//        GroupOfCards deck = new GroupOfCards(107);
+       
+        Color colors[]=Color.values();
+        Value values[]=Value.values();
+        for(Color color: colors){
+            for(Value value:values){
+                if(value.equals(WILD)==false&&value.equals(WILD4)==false&&color.equals(NONE)==false&&value.equals(ZERO)==false){
 //                    Since there are two of each card, the same card is added twice to the deck.
-                    deck.getCards().add(new UnoCard(color, value));
-                    deck.getCards().add(new UnoCard(color, value));
+                    getCards().add(new UnoCard(color, value));
+                    getCards().add(new UnoCard(color, value));
                    
                 }
             }
         }
 //WILD and WILD4 are added manually because the only combinations of NONE and WILD/WILD4 are with themselves, not with the other colors and values
-        for(int i = 0;i<4;i++){deck.getCards().add(new UnoCard(NONE, WILD));} //Adds four copies of WILD
-        for(int i = 0;i<4;i++){deck.getCards().add(new UnoCard(NONE, WILD4));} //Adds four copies of WILD4
+        for(int i = 0;i<4;i++){getCards().add(new UnoCard(NONE, WILD));} //Adds four copies of WILD
+        for(int i = 0;i<4;i++){getCards().add(new UnoCard(NONE, WILD4));} //Adds four copies of WILD4
         
 //Zeros are added separately because there is only one zero per color. 
-        for(Color color : uc.getAllColors()){
+        for(Color color : colors){
             if(color.equals(NONE)==false){
-            deck.getCards().add(new UnoCard(color, ZERO));
+            getCards().add(new UnoCard(color, ZERO));
             }
         }
       

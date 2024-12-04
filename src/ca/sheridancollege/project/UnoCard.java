@@ -28,12 +28,10 @@ public class UnoCard extends Card {
     
 //    Used to have a reference to getAllColors() and getAllValues, will be used to create a deck efficiently using for loops instead of manually creating cards one by one 108 times.
     public UnoCard(){}
-    public ArrayList<Color> getAllColors(){return colorArray;}
-    public ArrayList<Value> getAllValues(){return valueArray;}
+   
     
     
-    private ArrayList<Color> colorArray = new ArrayList<>(Arrays.asList(RED, BLUE, YELLOW, GREEN, NONE));
-    private ArrayList<Value> valueArray = new ArrayList<>(Arrays.asList(ZERO,ONE,TWO,THREE,FOUR,FIVE,SIX,SEVEN,EIGHT,NINE,SKIP,REVERSE,DRAW2,WILD,WILD4));
+   
 
     
 //    These will be used to compare two card's color/value
