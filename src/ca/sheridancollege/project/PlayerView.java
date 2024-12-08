@@ -16,6 +16,7 @@ public class PlayerView {
             System.out.println("["+i+"]"+hand.getCards().get(i).toString());
         }
         System.out.print("[99]UNO");
+        System.out.print("[999]DRAW 1");
         
     }
 
@@ -23,13 +24,30 @@ public class PlayerView {
         System.out.println("Player: " + name);
     }
 
-    public int selectCard() {
+    public int selectCard(Hand hand) {
         while(true){
             try{
                 Scanner sc = new Scanner(System.in);
                 System.out.println("Choose card to play or say UNO");
                 int select = sc.nextInt();
-                return select;
+                if(
+                    select<=hand.getCards().size()-1
+                    ||select==99
+                    ||select==999
+                   ){return select;}
+                
+                if(
+                    select>hand.getCards().size()-1
+                    ||select!=99
+                    ||select!=999){
+                    System.out.println("Invalid option, pick again");
+                    continue;
+                }
+                
+                    
+                
+                
+                
 
             }
 

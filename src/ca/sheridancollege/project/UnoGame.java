@@ -4,6 +4,7 @@
  */
 package ca.sheridancollege.project;
 
+import static ca.sheridancollege.project.Color.NONE;
 import java.util.Random;
 
 /**
@@ -14,33 +15,12 @@ public class UnoGame {
     public static void main(String[] args) {
         UnoGame game = new UnoGame();
         game.startRound();
-        GameView gv = new GameView();
-        PlayerView pv = new PlayerView();
 
-        UnoPlayer player = new UnoPlayer(pv.enterName());
-        UnoPlayer ai = new UnoPlayer("AI");
+
+
         
         
-        while(true){
-//            Turn order where the player went first
-            if(game.playerGoesFirst=true){
-                gv.displayTurnCount(game.turnCount);
-                pv.displayName(player.getName());
-                pv.displayHand(game.playerHand);
-                Card selected = game.playerHand.getCards().get(pv.selectCard());
-                
-                
-                game.turnCount+=1;
-            }
-      
-            
-//            Turn orderwhere the player went second
 
-
-
-
-// break loop if round win condition is fulfilled
-        }
         
         
     }
@@ -51,21 +31,57 @@ public class UnoGame {
     private Deck d = new Deck(108);
     private boolean playerGoesFirst;
     private Hand playerHand = new Hand();
-        
     private Hand aiHand = new Hand();
+    
+    private GameView gv = new GameView();
+    private PlayerView pv = new PlayerView();
+    private UnoPlayer player = new UnoPlayer(pv.enterName());
+    private UnoPlayer ai = new UnoPlayer("AI");
 
+    private DiscardPile discard = new DiscardPile(0);
     
  
 //    public UnoGame(String name) {
 //        super(name);
 //    }
 
+  
+//Having two different turn orders to account for which player goes first and if the turn order changes using skip/reverse/wild4
+    public void handleTurns(){
+                while(true){
+
+//            Turn order where the player went first
+            if(playerGoesFirst=true){
+                gv.displayTurnCount(turnCount);
+                pv.displayName(player.getName());
+                pv.displayHand(playerHand);
+                if(discard.getCards().isEmpty()==false){gv.displayTopOfDiscardPile(discard.getCards().get(0));}
+                UnoCard selected = playerHand.getCards().get(pv.selectCard(playerHand));
+                
+                
+                turnCount+=1;
+            }
+      
+            
+            
+            
+            
+//            Turn orderwhere the player went second
+
+
+
+
+// break loop if round win condition is fulfilled
+        }
+    }
     public void changeTurnOrder() {
         // Logic to change turn order
     }
 
     public void skipTurn() {
-        // Logic to skip turn
+       if(playerGoesFirst==true){playerGoesFirst=false;}
+       
+       if(playerGoesFirst==false){playerGoesFirst=true;}
     }
 
 
@@ -84,8 +100,27 @@ public class UnoGame {
         
     }
 
-    public void compareCards(Card card1, Card card2) {
-        // Logic to compare cards
+    public void compareAndPlayCards(UnoCard playedCard, Hand hand) {
+        UnoCard topCard;
+        
+        
+        topCard = discard.getCards().get(discard.getCards().size()-1);
+        if(
+            topCard.getColor().equals(playedCard.getColor())
+            |topCard.getColor().equals(NONE)
+            ||topCard.getValue().equals(playedCard.getValue())
+            ){
+                hand.getCards().remove(playedCard);
+                discard.getCards().add(playedCard);
+            }
+          
+
+            
+            
+            
+            
+            
+  
     }
 
     public void checkForVictory(Hand hand) {
@@ -111,9 +146,10 @@ public class UnoGame {
     }
     
     public void draw(Hand hand){
-        Card topCard = d.getCards().get(0);
+        UnoCard topCard = d.getCards().get(0);
         d.getCards().remove(topCard);
         hand.getCards().add(topCard);
+        
     }
 
 //    @Override
