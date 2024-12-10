@@ -142,7 +142,7 @@ public class UnoGame {
                         break;
                     }
                     
-//                    If player selected UNO
+//                  player selects uno when they have 2 cards left, then they play their card
                     if(playerChoice==99){
 
                         playerChoice = pv.selectCard(playerHand);
@@ -158,7 +158,7 @@ public class UnoGame {
                                 playerCalledUno=true;
                                 whenPlayerSaidUNO=player_turnCount;
                                 pv.sayUno();
-                                if(playerHand.getCards().size()==1){playerCalledUno=true;}
+                                if(playerHand.getCards().size()<=1){playerCalledUno=true;}
                                  break;
                                 }
                             if(compareCard(selected)==false){
@@ -183,11 +183,11 @@ public class UnoGame {
             if(turnCount%2==1){    
                 gv.spacer();
                 if(aiHand.getCards().size()>1){playerCalledUno=false;}
-
+                pv.displayName(ai.getName());
                 pv.aiCardsInHand(aiHand);
                 turnCount+=1;
                 ai_turnCount+=1;
-                pv.displayName(ai.getName());
+                
                 
 //                Logic for choosing card automatically
                 boolean canPlay=false;
@@ -305,7 +305,7 @@ public class UnoGame {
         discard.getCards().add(card);
         
         
-        for(int i =0;i<7;i++){
+        for(int i =0;i<2;i++){
             draw(playerHand);
             draw(aiHand);
         }
