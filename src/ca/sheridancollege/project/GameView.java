@@ -25,6 +25,6 @@ public class GameView {
         System.out.println("Winner: "+winner.getName());
     }
     
-
+    public void spacer(){System.out.println("_____________________________________________");}
 
 }

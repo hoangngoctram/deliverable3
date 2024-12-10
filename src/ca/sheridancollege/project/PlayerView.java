@@ -120,4 +120,10 @@ public class PlayerView {
             }
         }
     }
+    
+    public void aiCardsInHand(Hand aiHand){
+        System.out.println("Cards in hand: "+aiHand.getCards().size());
+    }
+    
+    public void aiDraw(){System.out.println("AI drew 1 card");}
 }

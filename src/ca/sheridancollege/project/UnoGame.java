@@ -4,7 +4,7 @@
  */
 package ca.sheridancollege.project;
 
-import static ca.sheridancollege.project.Color.NONE;
+import static ca.sheridancollege.project.Color.*;
 import static ca.sheridancollege.project.Value.*;
 import java.util.Random;
 
@@ -21,12 +21,12 @@ public class UnoGame {
             game.startRound();
             game.handleTurns();
             game.endRound(game.losers_hand, game.roundWinner);
-            if(game.player_points>=500){
+            if(game.player_points>=60){
                 game.gv.displayFinalWinner(game.player);
                 break;
             }
             
-            if(game.ai_points>=500){
+            if(game.ai_points>=60){
                 game.gv.displayFinalWinner(game.ai);
                 break;
             }
@@ -87,8 +87,10 @@ public class UnoGame {
                 
 //            If turncount is even, player goes, if turncount is odd, AI goes
 
-//             Player
+//             Players turn
             if(turnCount%2==0){
+                if(playerHand.getCards().size()>1){playerCalledUno=false;}
+                gv.spacer();
                 turnCount+=1;
                 player_turnCount+=1;
                 pv.displayName(player.getName());
@@ -106,7 +108,7 @@ public class UnoGame {
                             if(checkForVictory(playerHand, playerCalledUno,player_turnCount,whenPlayerSaidUNO,player)==true){
                                 break outerLoop;
                             }
-                            specialCard(selected, aiHand);
+                            specialCard(selected, aiHand, player);
 
                             break;}
                         if(compareCard(selected)==false){
@@ -118,7 +120,7 @@ public class UnoGame {
 //                    If player selected draw, autoplays the card if valid
                     if(playerChoice==999){
                         draw(playerHand);
-                        boolean player_canPlay;
+                        boolean player_canPlay = false;
                         UnoCard player_playableCard = null;
                         for(int i = 0;i<playerHand.getCards().size()-1;i++){
                             if(compareCard(playerHand.getCards().get(i))==true){
@@ -127,13 +129,14 @@ public class UnoGame {
                             }
 
                         }
-                        if(player_canPlay=true){
+                        if(player_canPlay==true){
                             playCard(playerHand, player_playableCard);
                             if(checkForVictory(playerHand, playerCalledUno,player_turnCount,whenPlayerSaidUNO,player)==true){
                                 break outerLoop;
                             }
-                            specialCard(player_playableCard, aiHand);
-
+                            specialCard(player_playableCard, aiHand, player);
+                            player_canPlay = false;
+                            break;
                         }
                 
                         break;
@@ -141,8 +144,7 @@ public class UnoGame {
                     
 //                    If player selected UNO
                     if(playerChoice==99){
-                        pv.sayUno();
-                        playerCalledUno=true;
+
                         playerChoice = pv.selectCard(playerHand);
                         if(playerChoice != 99&&playerChoice !=999){
                             UnoCard selected = playerHand.getCards().get(playerChoice);
@@ -151,18 +153,21 @@ public class UnoGame {
                                 if(checkForVictory(playerHand, playerCalledUno,player_turnCount,whenPlayerSaidUNO,player)==true){
                                     break outerLoop;
                                 }
-                                specialCard(selected, aiHand);
+                                specialCard(selected, aiHand, player);
 
                                 playerCalledUno=true;
                                 whenPlayerSaidUNO=player_turnCount;
-                                break;
-                            }
+                                pv.sayUno();
+                                if(playerHand.getCards().size()==1){playerCalledUno=true;}
+                                 break;
+                                }
                             if(compareCard(selected)==false){
                                 pv.pickAgain();
                                 playerChoice = pv.selectCard(playerHand);
                                 continue;}
                     }
-                        
+
+                            
                     }
                 }
                 
@@ -175,13 +180,17 @@ public class UnoGame {
             
             
 //            AI turn
-            if(turnCount%2==1){      
+            if(turnCount%2==1){    
+                gv.spacer();
+                if(aiHand.getCards().size()>1){playerCalledUno=false;}
+
+                pv.aiCardsInHand(aiHand);
                 turnCount+=1;
                 ai_turnCount+=1;
                 pv.displayName(ai.getName());
                 
 //                Logic for choosing card automatically
-                boolean canPlay;
+                boolean canPlay=false;
                 UnoCard playableCard = null;
                 for(int i = 0;i<aiHand.getCards().size()-1;i++){
                     if(compareCard(aiHand.getCards().get(i))==true){
@@ -190,14 +199,14 @@ public class UnoGame {
                     }
                     
                 }
-                if(canPlay=true){
+                if(canPlay==true){
                     playCard(aiHand, playableCard);
                     pv.aiAction(playableCard);
                     if(checkForVictory(aiHand, AICalledUno,ai_turnCount,whenAISaidUNO,ai)){
                         break;
                     }
 
-                    specialCard(playableCard, playerHand);
+                    specialCard(playableCard, playerHand, ai);
                     if(aiHand.getCards().size()==1){
                         pv.sayUno();
                         AICalledUno=true;
@@ -206,8 +215,9 @@ public class UnoGame {
 
                 }
                 
-                if(canPlay=false){
+                if(canPlay==false){
                     draw(aiHand);
+                    pv.aiDraw();
                     for(int i = 0;i<aiHand.getCards().size()-1;i++){
                         if(compareCard(aiHand.getCards().get(i))==true){
                             canPlay=true;
@@ -215,13 +225,13 @@ public class UnoGame {
                     }
                     
                 }
-                    if(canPlay=true){
+                    if(canPlay==true){
                         playCard(aiHand, playableCard);
                         pv.aiAction(playableCard);
                         if(checkForVictory(aiHand, AICalledUno,ai_turnCount,whenAISaidUNO,ai)){
                             break;
                     }
-                        specialCard(playableCard, playerHand);
+                        specialCard(playableCard, playerHand, ai);
                         if(aiHand.getCards().size()==0){
                             pv.sayUno();
                             AICalledUno=true;
@@ -244,7 +254,7 @@ public class UnoGame {
     
 
     
-    public void specialCard(UnoCard playedCard, Hand opponent_hand) {
+    public void specialCard(UnoCard playedCard, Hand opponent_hand, UnoPlayer activePlayer) {
         //Checks if the played card is skip/reverse/wild4, count+=1 is used with the count+=1 in handleTurns(), meaning the modulus does not change, this skips the oppposing players turn.
         if(playedCard.getValue().equals(SKIP)||playedCard.getValue().equals(REVERSE)||playedCard.getValue().equals(WILD4)){
             turnCount+=1;
@@ -263,8 +273,18 @@ public class UnoGame {
         }
         
         if(playedCard.getValue().equals(WILD)||playedCard.getValue().equals(WILD4)){
+
+            if(activePlayer.equals(player)){playedCard.setColor(pv.pickColor());}
             
-            playedCard.setColor(pv.pickColor());
+//            If AI plays wild or wild draw 4, sets color to a color that exists in their hand
+            if(activePlayer.equals(ai)){
+                for(int i =0;i<aiHand.getCards().size()-1;i++){
+                    if(aiHand.getCards().get(i).getColor().equals(RED)||aiHand.getCards().get(i).getColor().equals(BLUE)||aiHand.getCards().get(i).getColor().equals(GREEN)||aiHand.getCards().get(i).getColor().equals(YELLOW)){
+                        playedCard.setColor(aiHand.getCards().get(i).getColor());
+                    }
+                }
+                
+            }
         }
     }
     
@@ -285,7 +305,7 @@ public class UnoGame {
         discard.getCards().add(card);
         
         
-        for(int i =0;i<8;i++){
+        for(int i =0;i<7;i++){
             draw(playerHand);
             draw(aiHand);
         }
@@ -385,13 +405,14 @@ public class UnoGame {
             if(losers_hand.getCards().get(i).getValue().equals(DRAW2)||losers_hand.getCards().get(i).getValue().equals(SKIP)||losers_hand.getCards().get(i).getValue().equals(REVERSE)){player.setScore(player.getScore()+20);}
             if(losers_hand.getCards().get(i).getValue().equals(WILD)||losers_hand.getCards().get(i).getValue().equals(WILD4)){player.setScore(player.getScore()+50);}
         }
+        gv.spacer();
         pv.displayScore(this.player);
         pv.displayScore(ai);
         
     }
     
     public void draw(Hand hand){
-        UnoCard topCard = d.getCards().get(0);
+        UnoCard topCard = d.getCards().get(d.getCards().size()-1);
         d.getCards().remove(topCard);
         hand.getCards().add(topCard);
         discardToDeck();
