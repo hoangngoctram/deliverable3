@@ -24,10 +24,11 @@ public class UnoGame {
         
         
     }
-    private boolean calledUno;
+    private boolean playerCalledUno;
+    private boolean AICalledUno;
     private String gameWinner;
     private String roundWinner;
-    private int turnCount =0;
+    private int turnCount =1;
     private Deck d = new Deck(108);
     private boolean playerGoesFirst;
     private Hand playerHand = new Hand();
@@ -48,25 +49,93 @@ public class UnoGame {
   
 //Having two different turn orders to account for which player goes first and if the turn order changes using skip/reverse/wild4
     public void handleTurns(){
-                while(true){
-
-//            Turn order where the player went first
-            if(playerGoesFirst=true){
-                gv.displayTurnCount(turnCount);
-                pv.displayName(player.getName());
-                pv.displayHand(playerHand);
-                if(discard.getCards().isEmpty()==false){gv.displayTopOfDiscardPile(discard.getCards().get(0));}
-                UnoCard selected = playerHand.getCards().get(pv.selectCard(playerHand));
+            while(true){
                 
+//            If turncount is even, player goes, if turncount is odd, AI goes
+
+//             Player
+            if(turnCount%2==0){
+                pv.displayName(player.getName());
+                draw(playerHand);
+                pv.displayHand(playerHand);
+                gv.displayTopOfDiscardPile(discard.getCards().get(discard.getCards().size()-1));
+                
+                int playerChoice = pv.selectCard(playerHand);
+                
+                while(true){
+                    if(playerChoice != 99&&playerChoice !=999){
+                        UnoCard selected = playerHand.getCards().get(playerChoice);
+                        if(compareCard(selected)==true){
+                            playCard(playerHand, selected);
+                            break;}
+                        if(compareCard(selected)==false){
+                            pv.pickAgain();
+                            playerChoice = pv.selectCard(playerHand);
+                            continue;}
+                    }
+                    
+//                    If player selected draw
+                    if(playerChoice==999){
+                        draw(playerHand);
+                        if(playerChoice != 99&&playerChoice !=999){
+                            UnoCard selected = playerHand.getCards().get(playerChoice);
+                            if(compareCard(selected)==true){
+                                playCard(playerHand, selected);
+                                break;}
+                            if(compareCard(selected)==false){
+                                pv.pickAgain();
+                                playerChoice = pv.selectCard(playerHand);
+                                continue;}
+                    }
+                        break;
+                    }
+                    
+//                    If player selected UNO
+                    if(playerChoice==99){
+                        pv.sayUno();
+                        playerCalledUno=true;
+                        if(playerChoice != 99&&playerChoice !=999){
+                            UnoCard selected = playerHand.getCards().get(playerChoice);
+                            if(compareCard(selected)==true){
+                                playCard(playerHand, selected);
+                                break;}
+                            if(compareCard(selected)==false){
+                                pv.pickAgain();
+                                playerChoice = pv.selectCard(playerHand);
+                                continue;}
+                    }
+                        
+                    }
+                }
+                
+
+                
+
                 
                 turnCount+=1;
             }
-      
             
             
+//            AI
+            if(turnCount%2==1){
+                pv.displayName(ai.getName());
+                draw(aiHand);
+                
+//                Logic for choosing card automatically, plays the first valid card the for loop encounters
+                boolean canPlay;
+                UnoCard playableCard;
+                for(int i = 0;i<aiHand.getCards().size()-1;i++){
+                    if(compareCard(aiHand.getCards().get(i))==true){
+                        canPlay=true;
+                        playableCard=aiHand.getCards().get(i);
+                    }
+                    
+                }
+                
+                turnCount+=1;
+                
+            }
             
-            
-//            Turn orderwhere the player went second
 
 
 
@@ -77,6 +146,7 @@ public class UnoGame {
     public void changeTurnOrder() {
         // Logic to change turn order
     }
+    
 
     public void skipTurn() {
        if(playerGoesFirst==true){playerGoesFirst=false;}
@@ -100,19 +170,19 @@ public class UnoGame {
         
     }
 
-    public void compareAndPlayCards(UnoCard playedCard, Hand hand) {
+    public boolean compareCard(UnoCard playedCard) {
         UnoCard topCard;
-        
         
         topCard = discard.getCards().get(discard.getCards().size()-1);
         if(
             topCard.getColor().equals(playedCard.getColor())
-            |topCard.getColor().equals(NONE)
+            ||topCard.getColor().equals(NONE)
             ||topCard.getValue().equals(playedCard.getValue())
+            ||playedCard.getColor().equals(NONE)
             ){
-                hand.getCards().remove(playedCard);
-                discard.getCards().add(playedCard);
+                return true;
             }
+        else{return false;}
           
 
             
@@ -123,7 +193,11 @@ public class UnoGame {
   
     }
 
-    public void checkForVictory(Hand hand) {
+    public void playCard(Hand hand, UnoCard playedCard){
+        hand.getCards().remove(playedCard);
+        discard.getCards().add(playedCard);
+    }
+    public void checkForVictory(Hand hand, boolean calledUno) {
         if(hand.getCards().isEmpty()||calledUno==true){
             endRound();
         }
