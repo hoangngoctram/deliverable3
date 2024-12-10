@@ -4,6 +4,7 @@
  */
 package ca.sheridancollege.project;
 
+import static ca.sheridancollege.project.Color.*;
 import java.util.Scanner;
 
 /**
@@ -17,6 +18,7 @@ public class PlayerView {
         }
         System.out.print("[99]UNO");
         System.out.print("[999]DRAW 1");
+        
         
     }
 
@@ -75,5 +77,40 @@ public class PlayerView {
     
     public void pickAgain(){
         System.out.println("Color or value does not match, choose another card or draw");
+    }
+    
+//    For wild and wild4
+    public Color pickColor(){
+        while(true){
+            try{
+                Scanner sc = new Scanner(System.in);
+                System.out.println("Choose color: RED/BLUE/GREEN/YELLOW");
+                String input = sc.nextLine();
+                if(input.equals("RED")==false&&input.equals("BLUE")==false&&input.equals("GREEN")==false&&input.equals("YELLOW")==false){
+                    System.out.println("Error: input must be RED/BLUE/GREEN/YELLOW, choose again");
+                    continue;
+                }
+                
+                if(input.equals("RED")){
+                    return RED;
+                }
+                
+                if(input.equals("GREEN")){
+                    return GREEN;
+                }
+                
+                if(input.equals("BLUE")){
+                    return BLUE;
+                }
+                
+                if(input.equals("YELLOW")){
+                    return YELLOW;
+                }
+            }
+            catch(Exception e){
+                System.out.println("Error: input must be RED/BLUE/GREEN/YELLOW");
+                continue;
+            }
+        }
     }
 }

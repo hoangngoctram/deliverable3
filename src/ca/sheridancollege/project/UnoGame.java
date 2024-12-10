@@ -5,6 +5,7 @@
 package ca.sheridancollege.project;
 
 import static ca.sheridancollege.project.Color.NONE;
+import static ca.sheridancollege.project.Value.*;
 import java.util.Random;
 
 /**
@@ -62,6 +63,7 @@ public class UnoGame {
                 
                 int playerChoice = pv.selectCard(playerHand);
                 
+//                If player chooses a card and not draw or uno
                 while(true){
                     if(playerChoice != 99&&playerChoice !=999){
                         UnoCard selected = playerHand.getCards().get(playerChoice);
@@ -74,19 +76,21 @@ public class UnoGame {
                             continue;}
                     }
                     
-//                    If player selected draw
+//                    If player selected draw, autoplays the card if valid
                     if(playerChoice==999){
                         draw(playerHand);
-                        if(playerChoice != 99&&playerChoice !=999){
-                            UnoCard selected = playerHand.getCards().get(playerChoice);
-                            if(compareCard(selected)==true){
-                                playCard(playerHand, selected);
-                                break;}
-                            if(compareCard(selected)==false){
-                                pv.pickAgain();
-                                playerChoice = pv.selectCard(playerHand);
-                                continue;}
-                    }
+                        boolean player_canPlay;
+                        UnoCard player_playableCard = null;
+                        for(int i = 0;i<playerHand.getCards().size()-1;i++){
+                            if(compareCard(playerHand.getCards().get(i))==true){
+                                player_canPlay=true;
+                                player_playableCard=playerHand.getCards().get(i);
+                            }
+
+                        }
+                        if(player_canPlay=true){
+                            playCard(playerHand, player_playableCard);
+                        }
                         break;
                     }
                     
@@ -94,6 +98,7 @@ public class UnoGame {
                     if(playerChoice==99){
                         pv.sayUno();
                         playerCalledUno=true;
+                        playerChoice = pv.selectCard(playerHand);
                         if(playerChoice != 99&&playerChoice !=999){
                             UnoCard selected = playerHand.getCards().get(playerChoice);
                             if(compareCard(selected)==true){
@@ -121,9 +126,9 @@ public class UnoGame {
                 pv.displayName(ai.getName());
                 draw(aiHand);
                 
-//                Logic for choosing card automatically, plays the first valid card the for loop encounters
+//                Logic for choosing card automatically
                 boolean canPlay;
-                UnoCard playableCard;
+                UnoCard playableCard = null;
                 for(int i = 0;i<aiHand.getCards().size()-1;i++){
                     if(compareCard(aiHand.getCards().get(i))==true){
                         canPlay=true;
@@ -131,8 +136,18 @@ public class UnoGame {
                     }
                     
                 }
+                if(canPlay=true){
+                    playCard(aiHand, playableCard);
+                }
+                
+                if(canPlay=false){
+                    draw(aiHand);
+                    
+                }
                 
                 turnCount+=1;
+//                reset canPlay variable
+                canPlay=false;
                 
             }
             
@@ -143,16 +158,36 @@ public class UnoGame {
 // break loop if round win condition is fulfilled
         }
     }
+    
     public void changeTurnOrder() {
         // Logic to change turn order
     }
     
-
-    public void skipTurn() {
-       if(playerGoesFirst==true){playerGoesFirst=false;}
-       
-       if(playerGoesFirst==false){playerGoesFirst=true;}
+    public void specialCard(UnoCard playedCard, Hand opponent_hand) {
+        //Checks if the played card is skip/reverse/wild4, count+=1 is used with the count+=1 in handleTurns(), meaning the modulus does not change, this skips the oppposing players turn.
+        if(playedCard.getValue().equals(SKIP)||playedCard.getValue().equals(REVERSE)||playedCard.getValue().equals(WILD4)){
+            turnCount+=1;
+        }
+        
+        if(playedCard.getValue().equals(DRAW2)){
+            draw(opponent_hand);
+            draw(opponent_hand);
+        }
+        
+        if(playedCard.getValue().equals(WILD4)){
+            draw(opponent_hand);
+            draw(opponent_hand);
+            draw(opponent_hand);
+            draw(opponent_hand);
+        }
+        
+        if(playedCard.equals(WILD)||playedCard.equals(WILD4)){
+            
+            playedCard.setColor(pv.pickColor());
+        }
     }
+    
+    
 
 
     public void play() {
@@ -203,8 +238,23 @@ public class UnoGame {
         }
     }
 
+//    If deck runs out of cards
     public void discardToDeck() {
-        // Logic to move discard pile to deck
+        
+        if(d.getCards().size()==0){
+            for(int i =0;i<discard.getCards().size()-1;i++){
+                UnoCard card = discard.getCards().get(i);
+                d.getCards().add(card);
+                discard.getCards().remove(card);
+            }
+            
+            d.shuffle();
+            UnoCard card = d.getCards().get(d.getCards().size()-1);
+            d.getCards().remove(card);
+            discard.getCards().add(card);
+            
+            
+        }
     }
 
     public void startRound() {

@@ -29,7 +29,7 @@ public class UnoCard extends Card {
 //    Used to have a reference to getAllColors() and getAllValues, will be used to create a deck efficiently using for loops instead of manually creating cards one by one 108 times.
     public UnoCard(){}
    
-    
+    public void setColor(Color color){this.color=color;}
     
    
 
