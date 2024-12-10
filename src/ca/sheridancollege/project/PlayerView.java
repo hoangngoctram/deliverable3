@@ -17,7 +17,7 @@ public class PlayerView {
             System.out.println("["+i+"]"+hand.getCards().get(i).toString());
         }
         System.out.print("[99]UNO");
-        System.out.print("[999]DRAW 1");
+        System.out.print("\n[999]DRAW 1");
         
         
     }
@@ -65,8 +65,8 @@ public class PlayerView {
         System.out.println("UNO!");
     }
 
-    public void displayScore(int score) {
-        System.out.println("Score: " + score);
+    public void displayScore(UnoPlayer player) {
+        System.out.println(player.getName()+"'s Score: "+player.getScore());
     }
     
     public String enterName(){
@@ -77,6 +77,13 @@ public class PlayerView {
     
     public void pickAgain(){
         System.out.println("Color or value does not match, choose another card or draw");
+    }
+    
+    public void playerGoesFirstMessage(){System.out.println("You go first!");}
+    public void playerGoesSecondMessage(){System.out.println("You go second");}
+    
+    public void aiAction(UnoCard card){
+        System.out.println("AI played: "+card.toString());
     }
     
 //    For wild and wild4

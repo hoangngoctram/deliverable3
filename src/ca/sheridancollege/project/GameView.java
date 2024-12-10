@@ -10,7 +10,7 @@ package ca.sheridancollege.project;
  */
 public class GameView {
     public void displayTopOfDiscardPile(Card card) {
-        System.out.println("Top of discard pile: " + card);
+        System.out.println("\nTop of discard pile: " + card);
     }
 
     public void displayRoundNumber(int round) {
@@ -21,5 +21,10 @@ public class GameView {
         System.out.println("Turn "+turnCount);
     }
     
+    public void displayFinalWinner(UnoPlayer winner){
+        System.out.println("Winner: "+winner.getName());
+    }
+    
+
 
 }
