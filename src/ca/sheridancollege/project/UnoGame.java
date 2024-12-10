@@ -15,9 +15,14 @@ import java.util.Random;
 public class UnoGame {
     public static void main(String[] args) {
         UnoGame game = new UnoGame();
-        game.startRound();
+        while(true){
+            
+            game.startRound();
+            game.handleTurns();
+        }
+            
 
-
+        
 
         
         
@@ -25,11 +30,19 @@ public class UnoGame {
         
         
     }
+    //    Used to check win condition for the round
+    private int player_turnCount=0;
+    private int ai_turnCount=0;
     private boolean playerCalledUno;
     private boolean AICalledUno;
+    private int whenPlayerSaidUNO;
+    private int whenAISaidUNO;
     private String gameWinner;
     private String roundWinner;
-    private int turnCount =1;
+    private int turnCount;
+    
+
+    
     private Deck d = new Deck(108);
     private boolean playerGoesFirst;
     private Hand playerHand = new Hand();
@@ -56,6 +69,8 @@ public class UnoGame {
 
 //             Player
             if(turnCount%2==0){
+                turnCount+=1;
+                player_turnCount+=1;
                 pv.displayName(player.getName());
                 draw(playerHand);
                 pv.displayHand(playerHand);
@@ -69,6 +84,9 @@ public class UnoGame {
                         UnoCard selected = playerHand.getCards().get(playerChoice);
                         if(compareCard(selected)==true){
                             playCard(playerHand, selected);
+                            
+                            specialCard(selected, aiHand);
+
                             break;}
                         if(compareCard(selected)==false){
                             pv.pickAgain();
@@ -90,7 +108,10 @@ public class UnoGame {
                         }
                         if(player_canPlay=true){
                             playCard(playerHand, player_playableCard);
+                            specialCard(player_playableCard, aiHand);
+
                         }
+                
                         break;
                     }
                     
@@ -103,7 +124,12 @@ public class UnoGame {
                             UnoCard selected = playerHand.getCards().get(playerChoice);
                             if(compareCard(selected)==true){
                                 playCard(playerHand, selected);
-                                break;}
+                                specialCard(selected, aiHand);
+
+                                playerCalledUno=true;
+                                whenPlayerSaidUNO=player_turnCount;
+                                break;
+                            }
                             if(compareCard(selected)==false){
                                 pv.pickAgain();
                                 playerChoice = pv.selectCard(playerHand);
@@ -117,12 +143,14 @@ public class UnoGame {
                 
 
                 
-                turnCount+=1;
+                
             }
             
             
-//            AI
-            if(turnCount%2==1){
+//            AI turn
+            if(turnCount%2==1){      
+                turnCount+=1;
+                ai_turnCount+=1;
                 pv.displayName(ai.getName());
                 draw(aiHand);
                 
@@ -138,14 +166,38 @@ public class UnoGame {
                 }
                 if(canPlay=true){
                     playCard(aiHand, playableCard);
+                    if(checkForVictory(aiHand, AICalledUno,ai_turnCount,whenAISaidUNO,ai)){
+                        break;
+                    }
+
+                    specialCard(playableCard, playerHand);
+                    if(aiHand.getCards().size()==0){
+                        pv.sayUno();
+                        AICalledUno=true;
+                        whenAISaidUNO=ai_turnCount;
+                    }
+
                 }
                 
                 if(canPlay=false){
                     draw(aiHand);
+                    for(int i = 0;i<aiHand.getCards().size()-1;i++){
+                        if(compareCard(aiHand.getCards().get(i))==true){
+                            canPlay=true;
+                            playableCard=aiHand.getCards().get(i);
+                    }
                     
                 }
-                
-                turnCount+=1;
+                    if(canPlay=true){
+                        playCard(aiHand, playableCard);
+                        specialCard(playableCard, playerHand);
+                        if(aiHand.getCards().size()==0){
+                            pv.sayUno();
+                            AICalledUno=true;
+                        }
+                    }
+                }
+   
 //                reset canPlay variable
                 canPlay=false;
                 
@@ -192,10 +244,16 @@ public class UnoGame {
 
     public void play() {
         d.getCards().clear();
+        discard.getCards().clear();
+        playerHand.getCards().clear();
+        aiHand.getCards().clear();
+        
         d.buildDeck();
         d.shuffle();
         
-
+        UnoCard card = d.getCards().get(d.getCards().size()-1);
+        d.getCards().remove(card);
+        discard.getCards().add(card);
         
         
         for(int i =0;i<8;i++){
@@ -231,11 +289,15 @@ public class UnoGame {
     public void playCard(Hand hand, UnoCard playedCard){
         hand.getCards().remove(playedCard);
         discard.getCards().add(playedCard);
+        
     }
-    public void checkForVictory(Hand hand, boolean calledUno) {
-        if(hand.getCards().isEmpty()||calledUno==true){
-            endRound();
+    public boolean checkForVictory(Hand hand, boolean calledUno, int individual_turnCount, int when_UNO_was_called, UnoPlayer player) {
+//        Condition: if hand is empty, uno was called, uno was called the turn before
+        if(hand.getCards().isEmpty()&&calledUno==true&&when_UNO_was_called==individual_turnCount-1){
+            roundWinner = player.getName();
+            return true;
         }
+        return false;
     }
 
 //    If deck runs out of cards
@@ -262,6 +324,14 @@ public class UnoGame {
         Random rand = new Random();
         playerGoesFirst = rand.nextBoolean();
         
+//        If the player goes first, turnCount will be set to 0, will be used in handleTurns()
+        if(playerGoesFirst==true){
+            turnCount=0;
+        }
+        
+        if(playerGoesFirst==false){
+            turnCount=1;
+        }
         
     }
 
@@ -273,6 +343,8 @@ public class UnoGame {
         UnoCard topCard = d.getCards().get(0);
         d.getCards().remove(topCard);
         hand.getCards().add(topCard);
+        discardToDeck();
+
         
     }
 
