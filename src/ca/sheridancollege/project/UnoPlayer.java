@@ -1,3 +1,4 @@
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
@@ -5,16 +6,14 @@
 package ca.sheridancollege.project;
 
 /**
- *
- * @author Hoang Nguyen
- * @author Jacob Cruz
+ *@author Hoang Nguyen
+ * @author jacob
  */
-public class UnoPlayer extends Player {
+public class UnoPlayer extends Player{
     private int score;
-
-    public UnoPlayer(String name, int score) {
+    
+    public UnoPlayer(String name) {
         super(name);
-        this.score = score;
     }
 
     public int getScore() {
@@ -25,7 +24,8 @@ public class UnoPlayer extends Player {
         this.score = score;
     }
 
-    public void sayUno() {
-        System.out.println(getName() + " says UNO!");
-    }
+
 }
+
+
+
