@@ -9,31 +9,39 @@ import static ca.sheridancollege.project.Value.*;
 
 /**
  *@author Hoang Nguyen
- * @author jacob 
+ * @author jacob
  */
-public class Deck extends GroupOfCards {
+public class Deck extends UnoGroupOfCards {
+    public Deck(int size){super(size);}
+    
+    public void buildDeck(){
 
-   public Deck() {
-        super(108);  // Uno has 108 cards.
-        buildDeck();
-    }
+       
+        Color colors[]=Color.values();
+        Value values[]=Value.values();
+        for(Color color: colors){
+            for(Value value:values){
+                if(value.equals(WILD)==false&&value.equals(WILD4)==false&&color.equals(NONE)==false&&value.equals(ZERO)==false){
 
-    public void buildDeck() {
-        for (Color color : Color.values()) {
-            if (color != Color.NONE) {
-                for (Value value : Value.values()) {
-                    if (value != Value.WILD && value != Value.WILD4) {
-                        addCard(new UnoCard(color, value));
-                    }
+                    getCards().add(new UnoCard(color, value));
+                    getCards().add(new UnoCard(color, value));
+                }
+// There are 4 of each wild and wild4   
+                if(color.equals(NONE)&&(value.equals(WILD)||value.equals(WILD4))){
+                    getCards().add(new UnoCard(color, value));
+                    getCards().add(new UnoCard(color, value));
+                    getCards().add(new UnoCard(color, value));
+                    getCards().add(new UnoCard(color, value));
+                }
+// There are one zero for each color
+                if(color.equals(NONE)==false&&value.equals(ZERO)){
+                                        getCards().add(new UnoCard(color, value));
                 }
             }
         }
 
-        // Adding Wild and Wild Draw Four cards.
-        for (int i = 0; i < 4; i++) {
-            addCard(new UnoCard(Color.NONE, Value.WILD));
-            addCard(new UnoCard(Color.NONE, Value.WILD4));
-        }
-        shuffle();
+        
     }
+    
+    
 }
