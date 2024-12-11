@@ -1,3 +1,4 @@
+
 /**
  * SYST 17796 Project Base code.
  * Students can modify and extend to implement their game.
@@ -16,29 +17,39 @@ import java.util.Collections;
  * @author Jacob Cruz
  */
 public class GroupOfCards {
-  private ArrayList<Card> cards;
-    private int size;
+ //The group of cards, stored in an ArrayList
+    private ArrayList<UnoCard> cards = new ArrayList<>();
+    private int size;//the size of the grouping
 
     public GroupOfCards(int size) {
         this.size = size;
-        this.cards = new ArrayList<>(size);
     }
 
-    public void addCard(Card card) {
-        cards.add(card);
+    /**
+     * A method that will get the group of cards as an ArrayList
+     *
+     * @return the group of cards.
+     */
+    public ArrayList<UnoCard> getCards() {
+        return cards;
     }
 
     public void shuffle() {
         Collections.shuffle(cards);
     }
 
+    /**
+     * @return the size of the group of cards
+     */
     public int getSize() {
-        return cards.size();
+        return size;
     }
 
+    /**
+     * @param size the max size for the group of cards
+     */
     public void setSize(int size) {
         this.size = size;
     }
-}
 
-
+}//end class
