@@ -10,5 +10,19 @@ package ca.sheridancollege.project;
  * @author Jacob Cruz
  */
 public enum Value {
-    ZERO, ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, SKIP, REVERSE, DRAW_TWO, WILD, WILD4;
+    ZERO,
+    ONE,
+    TWO,
+    THREE,
+    FOUR,
+    FIVE,
+    SIX,
+    SEVEN,
+    EIGHT,
+    NINE,
+    SKIP,
+    REVERSE,
+    DRAW2,
+    WILD,
+    WILD4
 }
