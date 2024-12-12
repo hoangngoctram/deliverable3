@@ -293,7 +293,7 @@ public class UnoGame {
         discard.getCards().add(card);
         
         
-        for(int i =0;i<2;i++){
+        for(int i =0;i<7;i++){
             draw(playerHand);
             draw(aiHand);
         }
